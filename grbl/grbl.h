@@ -61,6 +61,10 @@
 #include "stepper.h"
 #include "jog.h"
 
+// Define specific servo files to inlcude:
+#include "servo.h"
+
+
 // ---------------------------------------------------------------------------------------
 // COMPILE-TIME ERROR CHECKING OF DEFINE VALUES:
 
