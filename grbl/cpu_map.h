@@ -128,9 +128,16 @@
 
     // Variable spindle configuration below. Do not change unless you know what you are doing.
     // NOTE: Only used when variable spindle is enabled.
-    #define SPINDLE_PWM_MAX_VALUE     36 // Don't change. 328p fast PWM mode fixes top value as 255. default 255
-    #ifndef SPINDLE_PWM_MIN_VALUE
-      #define SPINDLE_PWM_MIN_VALUE   6   // Must be greater than zero. default 1
+    #ifdef PIN11_PURPOSE SERVO
+      #define SPINDLE_PWM_MAX_VALUE     36 // Don't change. 328p fast PWM mode fixes top value as 255. default 255
+      #ifndef SPINDLE_PWM_MIN_VALUE
+        #define SPINDLE_PWM_MIN_VALUE   6   // Must be greater than zero. default 1
+      #endif
+      #else
+      #define SPINDLE_PWM_MAX_VALUE     255 // Don't change. 328p fast PWM mode fixes top value as 255.
+      #ifndef SPINDLE_PWM_MIN_VALUE
+        #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
+      #endif
     #endif
     #define SPINDLE_PWM_OFF_VALUE     0
     #define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE)
@@ -139,18 +146,20 @@
     #define SPINDLE_OCR_REGISTER      OCR2A
     #define SPINDLE_COMB_BIT          COM2A1
 
-    // Prescaled, 8-bit Fast PWM mode.
-    // COM2A1 = the polarity of the output set by the COM2A1:
+    #ifdef PIN11_PURPOSE SERVO
+      #define SPINDLE_TCCRA_INIT_MASK   (1<<COM2A1) | ((1<<WGM20) | (1<<WGM21))  // Configures fast PWM mode. with polarity COM2A1 option
+      #define SPINDLE_TCCRB_INIT_MASK      (1<<CS22) | (1 <<CS21) | (1<<CS20) // prescaler for gs90 servo pwm value = 60hz
+    #else
+      // Prescaled, 8-bit Fast PWM mode.
+      // COM2A1 = the polarity of the output set by the COM2A1:
 
-    //#define SPINDLE_TCCRA_INIT_MASK   ((1<<WGM20) | (1<<WGM21))  // Configures fast PWM mode. default preset
-    #define SPINDLE_TCCRA_INIT_MASK   (1<<COM2A1) | ((1<<WGM20) | (1<<WGM21))  // Configures fast PWM mode. with polarity COM2A1 option
+      #define SPINDLE_TCCRA_INIT_MASK   ((1<<WGM20) | (1<<WGM21))  // Configures fast PWM mode. default preset
 
-    // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS20)               // Disable prescaler -> 62.5kHz
-    // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS21)               // 1/8 prescaler -> 7.8kHz (Used in v0.9)
-    // #define SPINDLE_TCCRB_INIT_MASK   ((1<<CS21) | (1<<CS20)) // 1/32 prescaler -> 1.96kHz
-    //#define SPINDLE_TCCRB_INIT_MASK      (1<<CS22)               // 1/64 prescaler -> 0.98kHz (J-tech laser), default preset
-    #define SPINDLE_TCCRB_INIT_MASK      (1<<CS22) | (1 <<CS21) | (1<<CS20) // prescaler for gs90 servo pwm value = 60hz
-
+      // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS20)               // Disable prescaler -> 62.5kHz
+      // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS21)               // 1/8 prescaler -> 7.8kHz (Used in v0.9)
+      // #define SPINDLE_TCCRB_INIT_MASK   ((1<<CS21) | (1<<CS20)) // 1/32 prescaler -> 1.96kHz
+      #define SPINDLE_TCCRB_INIT_MASK      (1<<CS22)               // 1/64 prescaler -> 0.98kHz (J-tech laser), default preset
+    #endif
 
     // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
     #define SPINDLE_PWM_DDR   DDRB
@@ -198,9 +207,16 @@
 
       // Variable spindle configuration below. Do not change unless you know what you are doing.
       // NOTE: Only used when variable spindle is enabled.
-      #define SPINDLE_PWM_MAX_VALUE     255 // Don't change. 328p fast PWM mode fixes top value as 255.
-      #ifndef SPINDLE_PWM_MIN_VALUE
-        #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
+      #ifdef PIN11_PURPOSE SERVO
+        #define SPINDLE_PWM_MAX_VALUE     36 // Don't change. 328p fast PWM mode fixes top value as 255. default 255
+        #ifndef SPINDLE_PWM_MIN_VALUE
+          #define SPINDLE_PWM_MIN_VALUE   6   // Must be greater than zero. default 1
+        #endif
+        #else
+        #define SPINDLE_PWM_MAX_VALUE     255 // Don't change. 328p fast PWM mode fixes top value as 255.
+        #ifndef SPINDLE_PWM_MIN_VALUE
+          #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
+        #endif
       #endif
       #define SPINDLE_PWM_OFF_VALUE     0
       #define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE)
@@ -210,11 +226,20 @@
       #define SPINDLE_COMB_BIT          COM2A1
 
       // Prescaled, 8-bit Fast PWM mode.
-      #define SPINDLE_TCCRA_INIT_MASK   ((1<<WGM20) | (1<<WGM21))  // Configures fast PWM mode.
-      // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS20)               // Disable prescaler -> 62.5kHz
-      // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS21)               // 1/8 prescaler -> 7.8kHz (Used in v0.9)
-      // #define SPINDLE_TCCRB_INIT_MASK   ((1<<CS21) | (1<<CS20)) // 1/32 prescaler -> 1.96kHz
-      #define SPINDLE_TCCRB_INIT_MASK      (1<<CS22)               // 1/64 prescaler -> 0.98kHz (J-tech laser)
+      #ifdef PIN11_PURPOSE SERVO
+        #define SPINDLE_TCCRA_INIT_MASK   (1<<COM2A1) | ((1<<WGM20) | (1<<WGM21))  // Configures fast PWM mode. with polarity COM2A1 option
+        #define SPINDLE_TCCRB_INIT_MASK      (1<<CS22) | (1 <<CS21) | (1<<CS20) // prescaler for gs90 servo pwm value = 60hz
+      #else
+        // Prescaled, 8-bit Fast PWM mode.
+        // COM2A1 = the polarity of the output set by the COM2A1:
+
+        #define SPINDLE_TCCRA_INIT_MASK   ((1<<WGM20) | (1<<WGM21))  // Configures fast PWM mode. default preset
+
+        // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS20)               // Disable prescaler -> 62.5kHz
+        // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS21)               // 1/8 prescaler -> 7.8kHz (Used in v0.9)
+        // #define SPINDLE_TCCRB_INIT_MASK   ((1<<CS21) | (1<<CS20)) // 1/32 prescaler -> 1.96kHz
+        #define SPINDLE_TCCRB_INIT_MASK      (1<<CS22)               // 1/64 prescaler -> 0.98kHz (J-tech laser), default preset
+      #endif
 
       // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
       #define SPINDLE_PWM_DDR   DDRB

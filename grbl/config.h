@@ -29,6 +29,10 @@
 #define config_h
 #include "grbl.h" // For Arduino IDE compatibility.
 
+// for a servo to use on an eggbot or pen plotter.
+// It adjusts the timers to 60hz being compatible with a servo and allows with M3 S1 to S180 to set the degrees of a servo.
+// used as check in defaults.h & cpu_map.h
+#define PIN11_PURPOSE SERVO
 
 // Define CPU pin map and default settings.
 // NOTE: OEMs can avoid the need to maintain/update the defaults.h and cpu_map.h files and use only
@@ -36,6 +40,9 @@
 // If doing so, simply comment out these two defines and see instructions below.
 #define DEFAULTS_GENERIC
 #define CPU_MAP_ATMEGA328P // Arduino Uno CPU
+
+
+
 
 // Serial baud rate
 // #define BAUD_RATE 230400
