@@ -41,8 +41,8 @@
   #define DEFAULT_X_MAX_TRAVEL 200.0 // mm NOTE: Must be a positive value. $130
   #define DEFAULT_Y_MAX_TRAVEL 200.0 // mm NOTE: Must be a positive value. $131
   #define DEFAULT_Z_MAX_TRAVEL 200.0 // mm NOTE: Must be a positive value. $132
-  #define DEFAULT_SPINDLE_RPM_MAX 1000.0 // rpm
-  #define DEFAULT_SPINDLE_RPM_MIN 0.0 // rpm
+  #define DEFAULT_SPINDLE_RPM_MAX 180.0 // rpm or servo degrees $30
+  #define DEFAULT_SPINDLE_RPM_MIN 0.0 // rpm or servo degrees $31
   #define DEFAULT_STEP_PULSE_MICROSECONDS 10
   #define DEFAULT_STEPPING_INVERT_MASK 0
   #define DEFAULT_DIRECTION_INVERT_MASK 0
